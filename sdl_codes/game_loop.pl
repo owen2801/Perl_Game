@@ -45,8 +45,8 @@ sub rect_move
 	if($coord_x[@coord_x - 1] < (400-$rect_dist-$rect_width))
 	{
 		push @coord_x, 400;
-		push @height_up, int(rand(120)) + 40;
-		push @height_down, 300-$height_up[@coord_x-1];
+		push @height_up, int(rand(200)) + 40;
+		push @height_down, 280-$height_up[$i];
 	}
 	
 	for ($i = 0; $i < @coord_x; $i++)
