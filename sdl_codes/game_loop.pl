@@ -10,25 +10,17 @@ my @upper_rect=();
 my @down_rect=();
 my @height_up=();
 my @height_down=();
-my @coord_x=(20, 140, 260, 380);
+my $rect_dist=120;
+my $rect_width=60;
+my @coord_x=(20, 200, 380);
 
-push @height_up, int(rand(120)) + 40;
-push @height_down, 300-$height_up[0];
-push @height_up, int(rand(120)) + 40;
-push @height_down, 300-$height_up[1];
-push @height_up, int(rand(120)) + 40;
-push @height_down, 300-$height_up[2];
-push @height_up, int(rand(120)) + 40;
-push @height_down, 300-$height_up[3];
-
-push @upper_rect, [$coord_x[0], 0, 60, $height_up[0]];
-push @upper_rect, [$coord_x[1], 0, 60, $height_up[1]];
-push @upper_rect, [$coord_x[2], 0, 60, $height_up[2]];
-push @upper_rect, [$coord_x[3], 0, 60, $height_up[3]];
-push @down_rect, [$coord_x[0], 400-$height_down[0], 60, $height_down[0]];
-push @down_rect, [$coord_x[1], 400-$height_down[1], 60, $height_down[1]];
-push @down_rect, [$coord_x[2], 400-$height_down[2], 60, $height_down[2]];
-push @down_rect, [$coord_x[3], 400-$height_down[3], 60, $height_down[3]];	
+for ($i=0;$i<@coord_x;$i++)
+{
+	push @height_up, int(rand(200)) + 40;
+	push @height_down, 280-$height_up[$i];
+	push @upper_rect, [$coord_x[$i], 0, 60, $height_up[$i]];
+	push @down_rect, [$coord_x[$i], 400-$height_down[$i], 60, $height_down[$i]];
+}
 
 my $event=SDL::Event->new();   
 my $quit=0;   
@@ -43,14 +35,14 @@ sub get_events
 }
 sub rect_move
 {
-	if($coord_x[1] < 60)
+	if($coord_x[1] < $rect_dist)
 	{
 		shift @coord_x;
 		shift @height_up;
 		shift @height_down;
 	}
 	
-	if($coord_x[@coord_x - 1] < 280)
+	if($coord_x[@coord_x - 1] < (400-$rect_dist-$rect_width))
 	{
 		push @coord_x, 400;
 		push @height_up, int(rand(120)) + 40;
@@ -77,5 +69,5 @@ while (!$quit){
       get_events();
 	  rect_move();
 	  render();
-      #sleep(1);	  
+      select(undef, undef, undef, 0.03);	  
     } 
