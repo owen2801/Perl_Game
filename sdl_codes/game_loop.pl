@@ -3,7 +3,7 @@ use SDL;
 use SDLx::App;
 use SDL::Event;
 
-my $app=SDLx::App->new(w=>400,h=>400,d=>32,t=>"Flappy Me");
+my $app=SDLx::App->new(w=>400,h=>500,d=>32,t=>"Flappy Me");
 my $color =[108,108,108,108];
 my $drawing=0;
 my @upper_rect=(); #A dynamic array to store the properties of Upper Rectangle [x-coordinate, y-coordinate, width, height]
@@ -50,6 +50,19 @@ sub get_events
 	    $quit=1 if $event->type==SDL_QUIT;
      }   
 }
+#draw background
+sub draw_bg
+{
+	#draw the ground
+	$app->draw_rect([0,400,400,100],[10,80,10,255]);
+	#draw the sky
+	my $sky=SDLx::Surface->new(width=>400,height=>400);
+	$sky->draw_rect([0,0,400,400],[0,0,0,255]);
+
+	#draw the moon
+	$sky->draw_circle_filled([150,50],25,[255,255,0,255]);
+	$sky->blit($app);
+}
 #move the rectangles in the while loop
 sub rect_move
 {
@@ -78,7 +91,8 @@ sub rect_move
 sub render
 {
 	#draw a full screen black rectangle to cover all objects
-	$app->draw_rect([0,0,400,400], [0,0,0,0]);
+	#$app->draw_rect([0,0,400,400], [0,0,0,0]);
+	draw_bg();
 	#draw the new rectangles
 	for ($i = 0; $i< @coord_x; $i++)
 	{
@@ -98,9 +112,8 @@ sub cal_user_pos
 		$velocity = $velocity + $acceleration;
 		$acceleration =0.5 if($velocity < -4);
 		$user_pos = $user_pos + $velocity 	if($started == 1);
-		if(($user_pos <0 ) || ($user_pos > 360 )){
-			gameover();
-		}
+		$user_pos = 0 if ($user_pos < 0);
+		gameover() if($user_pos > 360);
 }
 
 #check if user touch the blocks
@@ -127,5 +140,5 @@ while (!$quit){
 	  cal_user_pos();
 	  render();
 	  check_coll();
-      select(undef, undef, undef, 0.02);	  
+      select(undef, undef, undef, 0.01);	  
     } 
