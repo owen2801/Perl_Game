@@ -44,7 +44,7 @@ sub get_events
         $quit=1 if $event->type==SDL_KEYDOWN;   
 		if ($event->type==SDL_MOUSEBUTTONDOWN){
 			$started =1;
-			$acceleration =-2;
+			$acceleration =-0.7;
 			$velocity = 0;
 		}
 	    $quit=1 if $event->type==SDL_QUIT;
@@ -83,7 +83,8 @@ sub rect_move
 	#every time 1 pixel movement for every rectangle
 	for ($i = 0; $i < @coord_x; $i++)
 	{
-		$upper_rect[$i] = [$coord_x[$i]--, 0, $rect_width, $height_upper[$i]];
+		$coord_x[$i] = $coord_x[$i] - 1.5;
+		$upper_rect[$i] = [$coord_x[$i], 0, $rect_width, $height_upper[$i]];
 		$lower_rect[$i] = [$coord_x[$i], 400-$height_lower[$i], $rect_width, $height_lower[$i]];
 	}
 }
@@ -110,7 +111,7 @@ sub render
 sub cal_user_pos
 {
 		$velocity = $velocity + $acceleration;
-		$acceleration =0.5 if($velocity < -4);
+		$acceleration =0.5 if($velocity < -6);
 		$user_pos = $user_pos + $velocity 	if($started == 1);
 		$user_pos = 0 if ($user_pos < 0);
 		gameover() if($user_pos > 360);
